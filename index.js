@@ -8,10 +8,34 @@ const OUTPUT_DIR = path.resolve(__dirname,"output");
 const outPutPath = path.join(OUTPUT_DIR,"team.html");
 const render = require("./htmlrendering");
 
+const teamMember = [];
+function app() {
+    function addNewMember() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "selectmembers",
+            massage: "what kind member would like to add?",
+            choices: ["Manager","engineneer","intern","done"]
+        }
+    ]).then(data => {
+        const role = data.selectmembers;
+        if( role == "Manager") {
+            getManager();
+        } else if(role == "engineer"){
+            getEngineer();
+        } else if(role == "intern"){
+            getintern();
+        } else if (role == "done"){
+            renderTeam();
+        }
+    
+    });
+    }
+    addNewMember()
                
 
-const Team = [];
-function app() {
+
     function getManager() {
             inquirer.prompt([
                 {
@@ -39,8 +63,7 @@ function app() {
             ]).then(data => {
                 const manager = new Manager(data.managerName, data.managerId, data.managerEmail,data.managerOfficeNumber);
                 teamMember.push(manager);
-                addingNewMember();
-               
+                addNewMember();
             })  
         }  
                
@@ -72,7 +95,7 @@ function app() {
         ]).then(data => {
             const engineer = new Engineer(data.engineerName, data.engineerId, data.engineerEmail,data.engineerOfficeNumber);
             teamMember.push(engineer);
-            addingNewMember();
+            addNewMember();
         })  
     }  
  function getintern() {
@@ -102,40 +125,16 @@ function app() {
      ]).then(data => {
          const intern = new Intern(data.internName, data.internId, data.internEmail,data.internOfficeNumber);
          teamMember.push(intern);
-         addingNewMember();     
+         addNewMember();
+         console.log("renders")
+           
      })  
  }                            
-    function addNewEmployee() {
-    inquirer.prompt([
-        {
-            type: "list",
-            name: "selectemployees",
-            massage: "what kind employee would like to add?",
-            list: [
-                "Manager",
-                 "engineneer",
-                  "intern",
-                  "done"
-            ]
-        }
-    ]).then(data => {
-        const role = data.selectemployees;
-        if( role == "Manager") {
-            getManager();
-        } else if(role == "engineer"){
-            getEngineer();
-        } else if(role == "intern"){
-            getintern();
-        } else if (role == "done"){
-            renderTeam();
-        }
-    
-    });
-    }
-    addNewEmployee()
+
 }
+
 function renderTeam () {
-    fs.writeFileSync(outPutPath,render(Team),"utf-8")
+    fs.writeFileSync(outPutPath,render(teamMember),"utf-8")
      
 }
 app();
